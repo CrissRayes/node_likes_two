@@ -2,7 +2,7 @@ require( 'dotenv' ).config()
 const express = require( 'express' )
 const app = express()
 const cors = require( 'cors' )
-const { getPosts } = require( './queries' )
+const { getPosts, createPost, updatePost, deletePost } = require( './queries' )
 
 const port = process.env.PORT || 3001
 app.listen( port, console.log( `Server running on http://localhost:${ port }` ) )
@@ -20,4 +20,12 @@ app.get( '/posts', async ( req, res ) => {
   } catch ( error ) {
     res.status( 500 ).json( { error: error.message } )
   }
+} )
+
+// POST
+app.post( '/posts', async ( req, res ) => {
+  const { titulo, img, descripcion } = req.body
+  await createPost( { titulo, img, descripcion } )
+  res.status( 200 ).json( { message: 'Post creado' } )
+  console.log( 'Post creado' )
 } )
