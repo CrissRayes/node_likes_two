@@ -24,8 +24,19 @@ app.get( '/posts', async ( req, res ) => {
 
 // POST
 app.post( '/posts', async ( req, res ) => {
-  const { titulo, img, descripcion } = req.body
-  await createPost( { titulo, img, descripcion } )
-  res.status( 200 ).json( { message: 'Post creado' } )
-  console.log( 'Post creado' )
+  try {
+    const { titulo, img, descripcion } = req.body
+    await createPost( { titulo, img, descripcion } )
+    res.status( 200 ).json( { message: 'Post creado' } )
+  } catch ( error ) {
+    res.status( 500 ).json( { error: error.message } )
+  }
+} )
+
+// PUT
+app.put( '/posts/like/:id', async ( req, res ) => {
+  const { id } = req.params
+  const { likes } = req.body
+  await updatePost( id, { likes } )
+  res.status( 200 ).json( { message: 'Post actualizado' } )
 } )

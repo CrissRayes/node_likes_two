@@ -16,8 +16,11 @@ const createPost = async ( payload ) => {
 
 
 // actualizar un post
-const updatePost = async ( id, post ) => {
-  //
+const updatePost = async ( id, payload ) => {
+  const consulta = "UPDATE posts SET titulo = $1, img = $2, descripcion = $3 WHERE id = $4"
+  const { titulo, img, descripcion } = payload
+  const values = [ titulo, img, descripcion, id ]
+  const result = await pool.query( consulta, values )
 }
 
 
