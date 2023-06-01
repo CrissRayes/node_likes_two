@@ -26,7 +26,9 @@ const updatePost = async ( id, payload ) => {
 
 // eliminar un post
 const deletePost = async ( id ) => {
-  //
+  const consulta = "DELETE FROM posts WHERE id = $1"
+  const values = [ id ]
+  const result = await pool.query( consulta, values )
 }
 
 

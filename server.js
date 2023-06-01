@@ -40,3 +40,10 @@ app.put( '/posts/like/:id', async ( req, res ) => {
   await updatePost( id, { likes } )
   res.status( 200 ).json( { message: 'Post actualizado' } )
 } )
+
+// DELETE
+app.delete( '/posts/:id', async ( req, res ) => {
+  const { id } = req.params
+  await deletePost( id )
+  res.status( 200 ).json( { message: 'Post eliminado' } )
+} )
