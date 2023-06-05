@@ -16,16 +16,25 @@ const createPost = async (post) => {
 
 // actualizar un post
 const updatePost = async (likes, id) => {
-  const consulta = "UPDATE posts SET likes = $1 WHERE id = $2"
+  const consulta = "UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *"
   const values = [likes, id]
-  await pool.query(consulta, values)
+  const result = await pool.query(consulta, values)
+
+  if (result.rowCount === 0) return null
+
+  return result.rows[0]
+
 }
 
 // eliminar un post
 const deletePost = async (id) => {
-  const consulta = "DELETE FROM posts WHERE id = $1"
+  const consulta = "DELETE FROM posts WHERE id = $1 RETURNING *"
   const values = [id]
   const result = await pool.query(consulta, values)
+
+  if (result.rowCount === 0) return null
+
+  return result.rows[0]
 }
 
 module.exports = {

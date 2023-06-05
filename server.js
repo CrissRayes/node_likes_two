@@ -37,9 +37,14 @@ app.put('/posts/like/:id', async (req, res) => {
   try {
     const { id } = req.params
     const { likes } = req.body
-    await updatePost(likes, id)
+    const post = await updatePost(likes, id)
+
+    if (!post) return res.status(404).json({ message: 'Post no encontrado' })
+
     res.status(200).json({ message: 'Post actualizado' })
+
   } catch (error) {
+
     res.status(500).json({ error: error.message })
   }
 })
@@ -48,9 +53,14 @@ app.put('/posts/like/:id', async (req, res) => {
 app.delete('/posts/:id', async (req, res) => {
   try {
     const { id } = req.params
-    await deletePost(id)
+    const post = await deletePost(id)
+
+    if (!post) return res.status(404).json({ message: 'Post no encontrado' })
+
     res.status(200).json({ message: 'Post eliminado' })
+
   } catch (error) {
+
     res.status(500).json({ error: error.message })
   }
 })
