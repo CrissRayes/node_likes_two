@@ -8,10 +8,10 @@ const port = process.env.PORT || 3001
 app.listen(port, console.log(`Server running on http://localhost:${port}`))
 
 // Middlewares
-app.use(cors())
-app.use(express.json())
+app.use(cors()) // Para permitir solicitudes desde diferentes dominios
+app.use(express.json()) // Analizar las solicitudes entrantes con formato JSON
 
-// GET
+// Obtener todos los posts
 app.get('/posts', async (req, res) => {
   try {
     const posts = await getPosts()
@@ -21,7 +21,7 @@ app.get('/posts', async (req, res) => {
   }
 })
 
-// POST
+// Crear un nuevo post
 app.post('/posts', async (req, res) => {
   try {
     const { titulo, img, descripcion, likes } = req.body
@@ -33,7 +33,7 @@ app.post('/posts', async (req, res) => {
 
 })
 
-// PUT
+// Actualizar el número de likes de un post
 app.put('/posts/like/:id', async (req, res) => {
   try {
 
@@ -45,7 +45,7 @@ app.put('/posts/like/:id', async (req, res) => {
   }
 })
 
-// DELETE
+// Eliminar un post
 app.delete('/posts/:id', async (req, res) => {
   try {
     const { id } = req.params
@@ -54,9 +54,7 @@ app.delete('/posts/:id', async (req, res) => {
     if (!post) return res.status(404).json({ message: 'Post no encontrado' })
 
     res.status(200).json({ message: 'Post eliminado' })
-
   } catch (error) {
-
     res.status(500).json({ error: error.message })
   }
 })

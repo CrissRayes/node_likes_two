@@ -1,50 +1,42 @@
 const pool = require('./bd');
 
-// traer todos los posts de la bd
+// Obtener todos los posts de la base de datos
 const getPosts = async () => {
   const { rows } = await pool.query("SELECT * FROM posts ORDER BY id")
   return rows
 }
 
-// crear un nuevo post
+// Crear un nuevo post en la base de datos
 const createPost = async (titulo, img, descripcion, likes) => {
   const consulta = "INSERT INTO posts VALUES (DEFAULT, $1, $2, $3, $4) RETURNING *"
   const values = [titulo, img, descripcion, likes]
   await pool.query(consulta, values)
 }
 
-// actualizar un post
+// Actualizar el número de likes de un post específico
 const updatePost = async (id) => {
-
-  // el RETURNING * es para devolver todas las columnas de la tabla
-  const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *"
-  // parametrizar
+  const consulta = "SELECT * FROM posts WHERE id = $1"
   const values = [id]
-  // ejecutar la consulta
   const { rows } = await pool.query(consulta, values)
-  // mostrar el post actualizado
-  console.log(rows[0])
-  // retornar el post actualizado
-  return rows[0]
+  const post = rows[0]
+  post.likes++
+  // console.log(post)
+  const updateQuery = "UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *"
+  const updateValues = [post.likes, id]
+  await pool.query(updateQuery, updateValues)
+  return post
 
-  // podria hacer lo mismo con el siguiente codigo:
-  // primero traer el post de la bd
-  // const consulta = "SELECT * FROM posts WHERE id = $1"
-  // const values = [id] // el id lo recibo por params
+  // TODO: Revisar por qué no funciona este código
+  // Este código no graba en la base de datos el nuevo valor de likes
+  // const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *"
+  // const values = [id]
   // const { rows } = await pool.query(consulta, values)
-  // const post = rows[0]
-  // // luego actualizar los likes
-  // post.likes++
-  // // console.log(post)
-  // // luego actualizar el post en la bd y retornarlo
-  // const updateQuery = "UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *"
-  // const updateValues = [post.likes, id]
-  // await pool.query(updateQuery, updateValues)
-  // return post
+  // console.log(rows[0])
+  // return rows[0]
 
 }
 
-// eliminar un post
+// Eliminar un post específico de la base de datos
 const deletePost = async (id) => {
   const consulta = "DELETE FROM posts WHERE id = $1 RETURNING *"
   const values = [id]
