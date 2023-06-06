@@ -25,26 +25,22 @@ app.get('/posts', async (req, res) => {
 app.post('/posts', async (req, res) => {
   try {
     const { titulo, img, descripcion, likes } = req.body
-    await createPost({ titulo, img, descripcion, likes })
-    res.status(200).json({ message: 'Post creado' })
+    await createPost(titulo, img, descripcion, likes)
+    res.status(201).json({ message: 'Post creado' })
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
+
 })
 
 // PUT
 app.put('/posts/like/:id', async (req, res) => {
   try {
+
     const { id } = req.params
-    const { likes } = req.body
-    const post = await updatePost(likes, id)
-
-    if (!post) return res.status(404).json({ message: 'Post no encontrado' })
-
-    res.status(200).json({ message: 'Post actualizado' })
-
+    const post = await updatePost(id)
+    res.status(200).json(post)
   } catch (error) {
-
     res.status(500).json({ error: error.message })
   }
 })
