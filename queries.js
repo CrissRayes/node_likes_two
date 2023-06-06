@@ -15,19 +15,27 @@ const createPost = async (titulo, img, descripcion, likes) => {
 
 // actualizar un post
 const updatePost = async (id) => {
-  // primero traer el post de la bd
-  const consulta = "SELECT * FROM posts WHERE id = $1"
-  const values = [id] // el id lo recibo por params
+
+  const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *"
+  const values = [id]
   const { rows } = await pool.query(consulta, values)
-  const post = rows[0]
-  // luego actualizar los likes
-  post.likes++
-  // console.log(post)
-  // luego actualizar el post en la bd y retornarlo
-  const updateQuery = "UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *"
-  const updateValues = [post.likes, id]
-  await pool.query(updateQuery, updateValues)
-  return post
+  return rows[0]
+
+  // podria hacer lo mismo con el siguiente codigo:
+  // primero traer el post de la bd
+  // const consulta = "SELECT * FROM posts WHERE id = $1"
+  // const values = [id] // el id lo recibo por params
+  // const { rows } = await pool.query(consulta, values)
+  // const post = rows[0]
+  // // luego actualizar los likes
+  // post.likes++
+  // // console.log(post)
+  // // luego actualizar el post en la bd y retornarlo
+  // const updateQuery = "UPDATE posts SET likes = $1 WHERE id = $2 RETURNING *"
+  // const updateValues = [post.likes, id]
+  // await pool.query(updateQuery, updateValues)
+  // return post
+
 }
 
 // eliminar un post
