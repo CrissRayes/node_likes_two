@@ -16,9 +16,15 @@ const createPost = async (titulo, img, descripcion, likes) => {
 // actualizar un post
 const updatePost = async (id) => {
 
+  // el RETURNING * es para devolver todas las columnas de la tabla
   const consulta = "UPDATE posts SET likes = likes + 1 WHERE id = $1 RETURNING *"
+  // parametrizar
   const values = [id]
+  // ejecutar la consulta
   const { rows } = await pool.query(consulta, values)
+  // mostrar el post actualizado
+  console.log(rows[0])
+  // retornar el post actualizado
   return rows[0]
 
   // podria hacer lo mismo con el siguiente codigo:
